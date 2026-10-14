@@ -18,5 +18,6 @@ export const services = [
  {title:'UI/UX Design',icon:'pen',description:'User-centered design that makes complex products intuitive, accessible and a pleasure to use.'},
  {title:'Digital Consulting & Support',icon:'globe',description:'Strategic guidance, optimization and ongoing support to keep your digital journey on track.'},
 ];
-export const description = 'At Gulsaga, we turn business ambitions into digital reality. Through Business Development strategy, modern Web Development and bespoke Software Development, we help organisations grow, operate smarter and create lasting impact.';
+export const description =
+  "Gulsaga brings business and technology together to plan digital services, build websites and software, and connect the tools organisations rely on.";
 export function pageHead(title,description){return {meta:[{title:`${title} | Gulsaga`},{name:'description',content:description},{property:'og:title',content:`${title} | Gulsaga`},{property:'og:description',content:description},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]};}
