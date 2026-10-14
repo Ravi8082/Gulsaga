@@ -11,6 +11,7 @@ import bcrypt from 'bcryptjs';
 import { z, ZodError } from 'zod';
 import { db } from './db.js';
 import { config } from './config.js';
+import { mysqlConnectionOptions } from './mysql-connection.js';
 import * as schemas from './validation.js';
 import { can, fail, token, hash, equal } from './security.js';
 import { sendOtp, verifyOtp, consumeGrant } from './otp.js';
@@ -31,7 +32,7 @@ export function createApp() {
     const app = express(); app.disable('x-powered-by'); app.set('trust proxy', Number(process.env.TRUST_PROXY || 0)); app.use(helmet());
     app.use(cors({ origin: (origin, cb) => { if (!origin || config.origins.includes(origin)) return cb(null, true); cb(fail(403, 'Origin is not allowed.')) }, credentials: true, allowedHeaders: ['Content-Type', 'X-CSRF-Token'], exposedHeaders: ['Content-Disposition'] }));
     app.use(express.json({ limit: '64kb' }));
-    const sql = knex({ client: 'mysql2', connection: config.DATABASE_URL, pool: { min: 0, max: 5 } });
+    const sql = knex({ client: 'mysql2', connection: mysqlConnectionOptions(config.DATABASE_URL), pool: { min: 0, max: 5 } });
     app.use(session({ name: 'Gulsaga.sid', secret: config.SESSION_SECRET, resave: false, saveUninitialized: false, store: new ConnectSessionKnexStore({ knex: sql, tableName: 'sessions', createTable: false }), cookie: { httpOnly: true, secure: config.production, sameSite: process.env.COOKIE_SAME_SITE || 'lax', maxAge: 30 * 60 * 1000 } }));
     app.use('/api', rateLimit({ windowMs: 60000, limit: 120, standardHeaders: 'draft-8', legacyHeaders: false }));
     app.use('/api', (req, res, next) => { res.setHeader('Cache-Control', 'no-store'); if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next(); if (!req.session.csrf || !equal(req.get('X-CSRF-Token'), req.session.csrf)) { const error = fail(403, 'Refresh the page and try again.'); error.code = 'CSRF_TOKEN_INVALID'; return next(error) } const origin = req.get('Origin'); if (origin && !config.origins.includes(origin)) return next(fail(403, 'Origin is not allowed.')); next() });
