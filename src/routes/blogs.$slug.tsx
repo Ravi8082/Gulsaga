@@ -10,11 +10,13 @@ function BlogArticleRoute() {
 }
 
 export const Route = createFileRoute("/blogs/$slug")({
-  head: ({ loaderData }) =>
-    pageHead(
-      loaderData?.title || "Gulsaga Journal",
-      loaderData?.excerpt || "Read the latest article from Gulsaga.",
-    ),
+  head: ({ loaderData }) => {
+    const article = loaderData as { title?: string; excerpt?: string } | undefined;
+    return pageHead(
+      article?.title || "Gulsaga Journal",
+      article?.excerpt || "Read the latest article from Gulsaga.",
+    );
+  },
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(publicQuery(`blogs/${params.slug}`)),
   component: BlogArticleRoute,

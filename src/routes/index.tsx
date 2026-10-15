@@ -7,7 +7,8 @@ export const Route = createFileRoute("/")({
   head: () => pageHead("Web Development & Software Company", description),
   loader: ({ context }) =>
     Promise.all([
-      context.queryClient.ensureQueryData(publicQuery("projects"), {
+      context.queryClient.ensureQueryData({
+        ...publicQuery("projects"),
         revalidateIfStale: true,
       }),
       context.queryClient.ensureQueryData(publicQuery("services", services)),
