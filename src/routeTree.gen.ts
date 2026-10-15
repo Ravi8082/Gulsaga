@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BlogsRouteImport } from './routes/blogs'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EmployeeRouteImport } from './routes/employee'
 import { Route as InnovationRouteImport } from './routes/innovation'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
@@ -27,6 +28,7 @@ import { Route as AdminAuditLogsRouteImport } from './routes/admin.audit-logs'
 import { Route as AdminBlogsRouteImport } from './routes/admin.blogs'
 import { Route as AdminContactsRouteImport } from './routes/admin.contacts'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as AdminEmployeesRouteImport } from './routes/admin.employees'
 import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminJobsRouteImport } from './routes/admin.jobs'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
@@ -65,6 +67,11 @@ const BlogsRoute = BlogsRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmployeeRoute = EmployeeRouteImport.update({
+  id: '/employee',
+  path: '/employee',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InnovationRoute = InnovationRouteImport.update({
@@ -130,6 +137,11 @@ const AdminContactsRoute = AdminContactsRouteImport.update({
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
   id: '/emails',
   path: '/emails',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmployeesRoute = AdminEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminExportsRoute = AdminExportsRouteImport.update({
@@ -209,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/blogs': typeof BlogsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/employee': typeof EmployeeRoute
   '/innovation': typeof InnovationRoute
   '/login': typeof LoginRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -221,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/employees': typeof AdminEmployeesRoute
   '/admin/exports': typeof AdminExportsRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/media': typeof AdminMediaRoute
@@ -241,6 +255,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/employee': typeof EmployeeRoute
   '/innovation': typeof InnovationRoute
   '/login': typeof LoginRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -253,6 +268,7 @@ export interface FileRoutesByTo {
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/employees': typeof AdminEmployeesRoute
   '/admin/exports': typeof AdminExportsRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/media': typeof AdminMediaRoute
@@ -276,6 +292,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/blogs': typeof BlogsRouteWithChildren
   '/contact': typeof ContactRoute
+  '/employee': typeof EmployeeRoute
   '/innovation': typeof InnovationRoute
   '/login': typeof LoginRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
@@ -288,6 +305,7 @@ export interface FileRoutesById {
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/emails': typeof AdminEmailsRoute
+  '/admin/employees': typeof AdminEmployeesRoute
   '/admin/exports': typeof AdminExportsRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/media': typeof AdminMediaRoute
@@ -312,6 +330,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blogs'
     | '/contact'
+    | '/employee'
     | '/innovation'
     | '/login'
     | '/privacy-policy'
@@ -324,6 +343,7 @@ export interface FileRouteTypes {
     | '/admin/blogs'
     | '/admin/contacts'
     | '/admin/emails'
+    | '/admin/employees'
     | '/admin/exports'
     | '/admin/jobs'
     | '/admin/media'
@@ -344,6 +364,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/employee'
     | '/innovation'
     | '/login'
     | '/privacy-policy'
@@ -356,6 +377,7 @@ export interface FileRouteTypes {
     | '/admin/blogs'
     | '/admin/contacts'
     | '/admin/emails'
+    | '/admin/employees'
     | '/admin/exports'
     | '/admin/jobs'
     | '/admin/media'
@@ -378,6 +400,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blogs'
     | '/contact'
+    | '/employee'
     | '/innovation'
     | '/login'
     | '/privacy-policy'
@@ -390,6 +413,7 @@ export interface FileRouteTypes {
     | '/admin/blogs'
     | '/admin/contacts'
     | '/admin/emails'
+    | '/admin/employees'
     | '/admin/exports'
     | '/admin/jobs'
     | '/admin/media'
@@ -413,6 +437,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   BlogsRoute: typeof BlogsRouteWithChildren
   ContactRoute: typeof ContactRoute
+  EmployeeRoute: typeof EmployeeRoute
   InnovationRoute: typeof InnovationRoute
   LoginRoute: typeof LoginRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
@@ -461,6 +486,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/employee': {
+      id: '/employee'
+      path: '/employee'
+      fullPath: '/employee'
+      preLoaderRoute: typeof EmployeeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/innovation': {
@@ -552,6 +584,13 @@ declare module '@tanstack/react-router' {
       path: '/emails'
       fullPath: '/admin/emails'
       preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/employees': {
+      id: '/admin/employees'
+      path: '/employees'
+      fullPath: '/admin/employees'
+      preLoaderRoute: typeof AdminEmployeesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/exports': {
@@ -662,6 +701,7 @@ interface AdminRouteChildren {
   AdminBlogsRoute: typeof AdminBlogsRoute
   AdminContactsRoute: typeof AdminContactsRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
+  AdminEmployeesRoute: typeof AdminEmployeesRoute
   AdminExportsRoute: typeof AdminExportsRoute
   AdminJobsRoute: typeof AdminJobsRoute
   AdminMediaRoute: typeof AdminMediaRoute
@@ -679,6 +719,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogsRoute: AdminBlogsRoute,
   AdminContactsRoute: AdminContactsRoute,
   AdminEmailsRoute: AdminEmailsRoute,
+  AdminEmployeesRoute: AdminEmployeesRoute,
   AdminExportsRoute: AdminExportsRoute,
   AdminJobsRoute: AdminJobsRoute,
   AdminMediaRoute: AdminMediaRoute,
@@ -709,6 +750,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   BlogsRoute: BlogsRouteWithChildren,
   ContactRoute: ContactRoute,
+  EmployeeRoute: EmployeeRoute,
   InnovationRoute: InnovationRoute,
   LoginRoute: LoginRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,

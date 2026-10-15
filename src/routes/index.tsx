@@ -4,7 +4,7 @@ import { Home } from "@/components/gulsags/site";
 import { pageHead, description, services } from "@/lib/gulsags/content";
 import { publicQuery } from "@/lib/gulsags/api";
 export const Route = createFileRoute("/")({
-  head: () => pageHead("Business, Web & Software Solutions", description),
+  head: () => pageHead("Web Development & Software Company", description),
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData(publicQuery("projects"), {

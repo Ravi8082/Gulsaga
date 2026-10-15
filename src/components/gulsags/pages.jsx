@@ -202,7 +202,7 @@ export function ProjectDetail({ slug }) {
       </PageIntro>
     );
   const hasRich = Boolean(
-    p.longDescription || p.features?.length || p.techTags?.length || p.client,
+    p.longDescription || p.features?.length || p.role || p.client,
   );
   return (
     <>
@@ -267,17 +267,20 @@ export function ProjectDetail({ slug }) {
               )}
             </div>
             <div className="project-rich-col">
-              {p.techTags?.length > 0 && (
+              {p.role && (
                 <div className="project-block">
-                  <p className="eyebrow">TECH STACK</p>
-                  <h3>Technologies used</h3>
-                  <div className="tech-tags">
-                    {p.techTags.map((t) => (
-                      <span className="badge tech-tag" key={t}>
-                        {t}
-                      </span>
-                    ))}
-                  </div>
+                  <p className="eyebrow">PROJECT CONTRIBUTION</p>
+                  <h3>Focused on what matters.</h3>
+                  <p>
+                    Shaping a clear and useful experience around this project’s
+                    goals, key information and the next steps for its visitors.
+                  </p>
+                  <dl className="project-meta">
+                    <div>
+                      <dt>Role</dt>
+                      <dd>{p.role}</dd>
+                    </div>
+                  </dl>
                 </div>
               )}
             </div>

@@ -37,6 +37,8 @@ model Project {
  techTags Json?
  role String? @db.VarChar(200)
  client String? @db.VarChar(200)
+ employeeAssignments EmployeeProject[]
+ employeeReports EmployeeDailyReport[]
  createdAt DateTime @default(now())
  updatedAt DateTime @updatedAt
  @@index([published,archived,displayOrder])
@@ -174,6 +176,7 @@ model JobApplication {
  resume UploadedFile @relation("Resume",fields:[resumeId],references:[id])
  photoId String? @db.VarChar(36)
  photo UploadedFile? @relation("Photo",fields:[photoId],references:[id])
+ employee Employee?
  consent Boolean
  status String @default("SUBMITTED") @db.VarChar(30)
  notes String @db.Text
@@ -197,7 +200,87 @@ model UploadedFile {
  blogCoverImages BlogPost[] @relation("BlogCoverImage")
  resumeFor JobApplication? @relation("Resume")
  photoFor JobApplication[] @relation("Photo")
+ employeePhoto Employee? @relation("EmployeePhoto")
  createdAt DateTime @default(now())
+}
+model Employee {
+ id String @id @default(uuid()) @db.VarChar(36)
+ applicationId String? @unique @db.VarChar(36)
+ application JobApplication? @relation(fields:[applicationId],references:[id],onDelete:Restrict)
+ name String @db.VarChar(100)
+ email String @unique @db.VarChar(255)
+ passwordHash String @db.VarChar(255)
+ mustChangePassword Boolean @default(true)
+ sessionVersion Int @default(0)
+ mobile String @db.VarChar(20)
+ qualification String @db.VarChar(160)
+ skills String @db.Text
+ experience String @db.VarChar(100)
+ city String @db.VarChar(120)
+ introduction String @db.Text
+ linkedin String? @db.VarChar(500)
+ github String? @db.VarChar(500)
+ portfolio String? @db.VarChar(500)
+ jobTitle String @db.VarChar(160)
+ photoId String? @unique @db.VarChar(36)
+ photo UploadedFile? @relation("EmployeePhoto",fields:[photoId],references:[id],onDelete:SetNull)
+ status String @default("ACTIVE") @db.VarChar(20)
+ salary Decimal @default(0) @db.Decimal(12,2)
+ allowances Decimal @default(0) @db.Decimal(12,2)
+ deductions Decimal @default(0) @db.Decimal(12,2)
+ assignments EmployeeProject[]
+ attendance EmployeeAttendance[]
+ reports EmployeeDailyReport[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([name])
+ @@index([email])
+}
+model EmployeeProject {
+ id String @id @default(uuid()) @db.VarChar(36)
+ employeeId String @db.VarChar(36)
+ employee Employee @relation(fields:[employeeId],references:[id],onDelete:Cascade)
+ projectId String @db.VarChar(36)
+ project Project @relation(fields:[projectId],references:[id],onDelete:Restrict)
+ assignedAt DateTime @default(now())
+ @@unique([employeeId,projectId])
+ @@index([projectId])
+}
+model EmployeeAttendance {
+ id String @id @default(uuid()) @db.VarChar(36)
+ employeeId String @db.VarChar(36)
+ employee Employee @relation(fields:[employeeId],references:[id],onDelete:Cascade)
+ date DateTime @db.Date
+ status String @db.VarChar(20)
+ notes String? @db.VarChar(500)
+ markedBy String @db.VarChar(36)
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([employeeId,date])
+ @@index([date])
+}
+model EmployeeDailyReport {
+ id String @id @default(uuid()) @db.VarChar(36)
+ employeeId String @db.VarChar(36)
+ employee Employee @relation(fields:[employeeId],references:[id],onDelete:Cascade)
+ projectId String? @db.VarChar(36)
+ project Project? @relation(fields:[projectId],references:[id],onDelete:SetNull)
+ date DateTime @db.Date
+ title String @db.VarChar(160)
+ summary String @db.Text
+ completed String @db.Text
+ blockers String? @db.Text
+ nextSteps String? @db.Text
+ hours Decimal @db.Decimal(4,2)
+ status String @default("SUBMITTED") @db.VarChar(20)
+ adminFeedback String? @db.Text
+ reviewedBy String? @db.VarChar(36)
+ reviewedAt DateTime?
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@unique([employeeId,date])
+ @@index([projectId])
+ @@index([status,date])
 }
 model EmailNotification {
  id String @id @default(uuid()) @db.VarChar(36)

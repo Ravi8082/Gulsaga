@@ -83,13 +83,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Gulsaga — Ideas. Technology. Impact." },
-      { name: "description", content: "Purposeful digital experiences across technology, hospitality, financial learning, creative commerce and social impact." },
+      { title: "Gulsaga | Web Development & Software Solutions" },
+      { name: "description", content: "Gulsaga helps businesses grow with business strategy, web development, custom software, UI/UX design and digital consulting." },
       { name: "author", content: "Gulsaga" },
-      { property: "og:title", content: "Gulsaga — Ideas. Technology. Impact." },
-      { property: "og:description", content: "Purposeful digital experiences across technology, hospitality, financial learning, creative commerce and social impact." },
+      { property: "og:title", content: "Gulsaga | Web Development & Software Solutions" },
+      { property: "og:description", content: "Gulsaga helps businesses grow with business strategy, web development, custom software, UI/UX design and digital consulting." },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Gulsaga" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Gulsaga | Web Development & Software Solutions" },
+      { name: "twitter:description", content: "Gulsaga helps businesses grow with business strategy, web development, custom software, UI/UX design and digital consulting." },
 
     ],
     links: [

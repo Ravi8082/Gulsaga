@@ -24,7 +24,83 @@ export function SubmissionForm({ jobId = '' } = {}) {
     if (application && !job) return <PageIntro eyebrow="CAREERS" title="Application unavailable">Please select an active opportunity from the careers page.</PageIntro>;
     return <><PageIntro eyebrow={application ? 'JOIN Gulsaga' : 'LET’S CONNECT'} title={application ? `Apply for ${job.title}` : 'Let’s Build Something Meaningful.'}>{application ? 'Tell us about yourself and the experience you bring.' : 'Have an idea, a question or a new possibility? We’d love to hear from you.'}</PageIntro><section className="section"><div className="container contact-layout"><aside><p className="eyebrow">{application ? 'YOUR NEXT CHAPTER' : 'START A CONVERSATION'}</p><h2>{application ? 'Make an impact.' : 'Good ideas start here.'}</h2><p>{application ? 'Your application will be reviewed by our recruitment team.' : 'Share what you have in mind. We’ll explore how thoughtful technology can bring it to life.'}</p><div className="contact-assurance"><ShieldCheck /><div><h3>Your details stay private.</h3><p>Email verification helps keep your submission secure.</p></div></div><Link to={application ? '/careers' : '/projects'} className="text-link">{application ? 'Browse opportunities' : 'Explore our projects'}<ArrowUpRight size={16} /></Link></aside><div className="form-panel"><div className="form-steps">{['Your details', 'Verify email', 'Submit'].map((x, i) => <div className={stage >= i ? 'current' : ''} key={x}><span>{stage > i ? <Check size={14} /> : i + 1}</span>{x}</div>)}</div>{error && <div className="form-alert" role="alert">{error}</div>}{stage === 0 && <form onSubmit={handleSubmit(send)}><div className="form-grid"><Field label="Full name" name="name" register={register} errors={errors} maxLength={100} autoComplete="name" /><Field label="Email address" name="email" register={register} errors={errors} type="email" maxLength={255} autoComplete="email" /><Field label="Mobile number with country code" name="mobile" register={register} errors={errors} placeholder="+91" maxLength={16} />{application ? <><Field label="Highest qualification" name="qualification" register={register} errors={errors} maxLength={160} /><Field label="Relevant skills" name="skills" register={register} errors={errors} maxLength={2000} /><Field label="Experience level" name="experience" register={register} errors={errors}><select {...register('experience')}><option value="">Select experience</option>{['Student / Fresher', 'Less than 1 year', '1–3 years', '3–5 years', '5+ years'].map(x => <option key={x}>{x}</option>)}</select></Field><Field label="Current city" name="city" register={register} errors={errors} maxLength={120} /><Field label="LinkedIn URL" name="linkedin" register={register} errors={errors} required={false} /><Field label="GitHub URL" name="github" register={register} errors={errors} required={false} /><Field label="Portfolio URL" name="portfolio" register={register} errors={errors} required={false} /><Field label="Short introduction" name="introduction" register={register} errors={errors} wide><textarea {...register('introduction')} rows={5} maxLength={5000} /></Field><Field label="Cover letter" name="coverLetter" register={register} errors={errors} required={false} wide><textarea {...register('coverLetter')} rows={4} maxLength={5000} /></Field><label className="form-field wide"><span>Resume · PDF, up to 5 MB</span><input type="file" accept="application/pdf" required onChange={e => setResume(e.target.files?.[0] || null)} /></label>{job.photoRequired && <label className="form-field wide"><span>Profile photo · JPEG, PNG or WebP</span><input type="file" accept="image/jpeg,image/png,image/webp" required onChange={e => setPhoto(e.target.files?.[0] || null)} /></label>}</> : <><Field label="Company or organisation" name="company" register={register} errors={errors} required={false} maxLength={160} /><Field label="Enquiry type" name="type" register={register} errors={errors} wide><select {...register('type')}>{['Website Development', 'Custom Software', 'UI/UX Design', 'Digital Platforms', 'Partnership', 'Careers', 'General Enquiry'].map(x => <option key={x}>{x}</option>)}</select></Field><Field label="Subject" name="subject" register={register} errors={errors} wide maxLength={180} /><Field label="Your message" name="message" register={register} errors={errors} wide><textarea {...register('message')} rows={5} placeholder="Tell us a little about what you have in mind…" maxLength={5000} /></Field></>}</div><label className="consent"><input type="checkbox" {...register('consent')} /><span>I agree to the <Link to="/privacy-policy">Privacy Policy</Link> and consent to the processing of my details.</span></label>{errors.consent && <p className="field-error">{errors.consent.message}</p>}<Button disabled={busy} type="submit" size="lg">{busy ? <LoaderCircle className="spin" /> : <Mail size={17} />}Send Verification Code <ArrowRight /></Button><p className="form-footnote">We’ll send a six-digit code to verify your email address.</p></form>}{stage === 1 && <form onSubmit={verify} className="verification-panel"><Mail size={36} /><h2>Check your inbox.</h2><p>A verification code was accepted by the email provider for <strong>{values.email}</strong>.</p><label className="form-field"><span>Six-digit verification code</span><input autoComplete="one-time-code" inputMode="numeric" maxLength={6} pattern="[0-9]{6}" required value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, ''))} className="otp-input" /></label><Button type="submit" disabled={busy || otp.length !== 6}>Verify Email <ShieldCheck /></Button><Button type="button" variant="ghost" disabled={remaining > 0 || busy} onClick={() => send()}>Resend code{remaining > 0 ? ` (${remaining}s)` : ''}</Button><Button type="button" variant="link" onClick={() => { setStage(0); setGrant('') }}>Change details</Button><p className="form-footnote">Codes expire after five minutes.</p></form>}{stage === 2 && <div className="verification-panel"><ShieldCheck size={40} /><h2>Ready to send.</h2><p>Your email has been verified. Submit your {application ? 'application' : 'enquiry'} to Gulsaga.</p><div className="submission-summary"><strong>{values.name}</strong><span>{values.email}</span><span>{application ? job.title : values.subject}</span></div><Button onClick={submit} disabled={busy} size="lg">{busy ? <LoaderCircle className="spin" /> : <ArrowRight />}{busy ? `Submitting${application ? ` ${progress}%` : ''}` : application ? 'Submit Application' : 'Submit Enquiry'}</Button></div>}{stage === 3 && <div className="verification-panel"><div className="success-icon"><Check size={30} /></div><h2>{application ? 'Application received.' : 'Thank you for reaching out.'}</h2><p>{application ? 'Thank you for applying to Gulsaga. We have successfully received your application and resume. Our recruitment team will review your profile. If your qualifications match the position requirements, we will contact you regarding the next steps.' : 'Thank you for contacting Gulsaga. Your enquiry has been received successfully. Our team will get back to you as soon as possible.'}</p><div className="submission-summary"><span>Your reference number</span><strong>{reference}</strong></div><Button asChild variant="outline"><Link to="/">Back to Home <ArrowRight /></Link></Button></div>}</div></div></section></>
 }
-export function Login() { const [mode, setMode] = useState('login'); const [busy, setBusy] = useState(false); const [error, setError] = useState(''); const [note, setNote] = useState(''); const navigate = useNavigate(); async function submit(e) { e.preventDefault(); setBusy(true); setError(''); setNote(''); const f = new FormData(e.currentTarget); try { const email = z.string().email().max(255).parse(f.get('email')); if (mode === 'forgot') { await request('post', '/auth/admin/forgot-password', { email }); setNote('If an administrator account exists, password reset instructions will be sent.') } else { await request('post', '/auth/admin/login', { email, password: z.string().min(1).max(128).parse(f.get('password')) }); await navigate({ to: '/admin' }) } } catch (e) { setError(e.message) } finally { setBusy(false) } } return <section className="login-page"><div className="login-panel"><div className="service-icon"><ShieldCheck size={25} /></div><p className="eyebrow">Gulsaga ADMINISTRATION</p><h1>{mode === 'forgot' ? 'Reset your password.' : 'Welcome back.'}</h1><p>{mode === 'forgot' ? 'Enter your administrator email address.' : 'Sign in to manage content and opportunities.'}</p>{error && <div role="alert" className="form-alert">{error}</div>}{note && <div role="status" className="form-notice">{note}</div>}<form onSubmit={submit}><label className="form-field"><span>Email address</span><input name="email" type="email" required autoComplete="username" maxLength={255} /></label>{mode === 'login' && <label className="form-field"><span>Password</span><input name="password" type="password" required maxLength={128} autoComplete="current-password" /></label>}<Button type="submit" disabled={busy} size="lg">{busy ? <LoaderCircle className="spin" /> : <ArrowRight />}{mode === 'login' ? 'Sign In' : 'Send Reset Instructions'}</Button></form><Button variant="link" onClick={() => setMode(mode === 'login' ? 'forgot' : 'login')}>{mode === 'login' ? 'Forgot password?' : 'Back to sign in'}</Button></div></section> }
+export function Login() {
+    const [mode, setMode] = useState('login');
+    const [busy, setBusy] = useState(false);
+    const [error, setError] = useState('');
+    const [note, setNote] = useState('');
+    const navigate = useNavigate();
+
+    async function submit(event) {
+        event.preventDefault();
+        setBusy(true);
+        setError('');
+        setNote('');
+        const form = new FormData(event.currentTarget);
+        try {
+            const email = z.string().email().max(255).parse(form.get('email'));
+            if (mode === 'forgot') {
+                await request('post', '/auth/admin/forgot-password', { email });
+                setNote('If an administrator account exists, password reset instructions will be sent.');
+            } else {
+                const result = await request('post', '/auth/admin/login', {
+                    email,
+                    password: z.string().min(1).max(128).parse(form.get('password')),
+                });
+                await navigate({ to: result.actor === 'EMPLOYEE' ? '/employee' : '/admin' });
+            }
+        } catch (submitError) {
+            setError(submitError.message);
+        } finally {
+            setBusy(false);
+        }
+    }
+
+    return (
+        <section className="login-page">
+            <div className="login-panel">
+                <div className="login-card-header">
+                    <Link to="/" className="login-brand" aria-label="Gulsaga home">
+                        <span className="login-brand-mark">G</span>
+                        <span>Gulsaga<small>IDEAS. TECHNOLOGY. IMPACT.</small></span>
+                    </Link>
+                    <span className="login-secure-label"><ShieldCheck size={15} /> SECURE SIGN IN</span>
+                </div>
+                <div className="login-card-content">
+                    <div className="service-icon"><ShieldCheck size={25} /></div>
+                    <p className="eyebrow">Gulsaga WORKSPACE</p>
+                    <h1>{mode === 'forgot' ? 'Reset your password.' : 'Welcome back.'}</h1>
+                    <p>{mode === 'forgot' ? 'Enter your administrator email address.' : 'Sign in with the account details provided by your administrator.'}</p>
+                    {error && <div role="alert" className="form-alert">{error}</div>}
+                    {note && <div role="status" className="form-notice">{note}</div>}
+                    <form onSubmit={submit}>
+                        <label className="form-field">
+                            <span>Email address</span>
+                            <input name="email" type="email" required autoComplete="username" maxLength={255} />
+                        </label>
+                        {mode === 'login' && (
+                            <label className="form-field">
+                                <span>Password</span>
+                                <input name="password" type="password" required maxLength={128} autoComplete="current-password" />
+                            </label>
+                        )}
+                        <Button type="submit" disabled={busy} size="lg">
+                            {busy ? <LoaderCircle className="spin" /> : <ArrowRight />}
+                            {mode === 'login' ? 'Sign In' : 'Send Reset Instructions'}
+                        </Button>
+                    </form>
+                    <Button variant="link" onClick={() => { setMode(mode === 'login' ? 'forgot' : 'login'); setError(''); setNote(''); }}>
+                        {mode === 'login' ? 'Forgot password?' : 'Back to sign in'}
+                    </Button>
+                </div>
+                <div className="login-panel-footer">
+                    <span>Administrator and employee access</span>
+                    <Link to="/">Return to Gulsaga <ArrowUpRight size={14} /></Link>
+                </div>
+            </div>
+        </section>
+    );
+}
 
 export function ResetPassword() {
     const [busy, setBusy] = useState(false);
@@ -65,7 +141,7 @@ export function ResetPassword() {
         }
     }
 
-    return <section className="login-page"><div className="login-panel">
+    return <section className="login-page"><div className="login-panel reset-password-panel">
         <h1>{done ? 'Password updated.' : checking ? 'Verifying your email…' : 'Choose a new password.'}</h1>
         <p>{done ? 'Your email was verified and your password has been changed. You can now sign in.' : 'The reset link sent to your email verifies your identity. Use at least 12 characters, including uppercase, lowercase, a number and a symbol.'}</p>
         {error && <div className="form-alert" role="alert">{error}</div>}
