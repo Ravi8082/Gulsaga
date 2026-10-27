@@ -3,8 +3,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Home } from "@/components/gulsags/site";
 import { pageHead, description, services } from "@/lib/gulsags/content";
 import { publicQuery } from "@/lib/gulsags/api";
+
 export const Route = createFileRoute("/")({
-  head: () => pageHead("Web Development & Software Company", description),
+  head: () => ({
+    ...pageHead("Web Development & Software Company", description),
+    meta: [
+      {
+        name: "google-site-verification",
+        content: "YOUR_GOOGLE_VERIFICATION_CODE",
+      },
+    ],
+  }),
+
   loader: ({ context }) =>
     Promise.all([
       context.queryClient.ensureQueryData({
@@ -14,5 +24,6 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(publicQuery("services", services)),
       context.queryClient.ensureQueryData(publicQuery("jobs", [])),
     ]),
+
   component: Home,
 });
