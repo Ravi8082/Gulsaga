@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
     meta: [
       {
         name: "google-site-verification",
-        content: "YOUR_GOOGLE_VERIFICATION_CODE",
+        content: ""9k4C65ZrtxShByuvkobvlZuDh",
       },
     ],
   }),
