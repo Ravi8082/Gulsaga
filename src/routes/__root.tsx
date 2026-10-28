@@ -93,6 +93,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Gulsaga | Web Development & Software Solutions" },
       { name: "twitter:description", content: "Gulsaga helps businesses grow with business strategy, web development, custom software, UI/UX design and digital consulting." },
+      { property: "og:image", content: "https://gulsaga.com/og-image.jpg" },
+      { property: "og:image:alt", content: "Gulsaga — web development and software solutions" },
+      { name: "twitter:image", content: "https://gulsaga.com/og-image.jpg" },
 
     ],
     links: [
